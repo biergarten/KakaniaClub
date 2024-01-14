@@ -5,7 +5,7 @@ namespace Mas.WebApi.UnitTests
         [Fact]
         public void Test1()
         {
-
+            Assert.Equal(1, 1);
         }
     }
 }
