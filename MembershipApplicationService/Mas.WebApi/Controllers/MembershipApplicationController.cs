@@ -35,6 +35,8 @@ namespace Mas.WebApi.Controllers
         public async Task<ActionResult<GetApplicationResponse>> Get(Guid id)
         {
             var application = await _applicationRepository.GetByIdAsync(id);
+            if (application == null)
+                return NotFound();
             var response = new GetApplicationResponse(application.ToDto()
                 );
             return Ok(response);

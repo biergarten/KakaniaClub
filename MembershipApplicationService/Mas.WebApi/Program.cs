@@ -1,6 +1,7 @@
 using Mas.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Mas.WebApi.HostedService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +18,16 @@ builder.Services.AddScoped<IApplicationRepository,
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=MembershipApplicationService;Integrated Security=SSPI;");
+    options
+    .UseSqlServer("Server=tcp:kakaniaclubserver.database.windows.net,1433;Initial Catalog=mas_db;Persist Security Info=False;User ID=francisco;Password=_Password99;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+    //.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=MembershipApplicationService;Integrated Security=SSPI;");
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddNewApplicationListener();
 
 var app = builder.Build();
 
@@ -38,5 +43,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();

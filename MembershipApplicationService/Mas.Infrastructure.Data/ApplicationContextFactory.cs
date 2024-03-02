@@ -14,7 +14,8 @@ namespace Mas.Infrastructure.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
             optionsBuilder.UseSqlServer(
-                "Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=MembershipApplicationService;Integrated Security=SSPI;");
+            //"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=MembershipApplicationService;Integrated Security=SSPI;");
+            "Server=tcp:kakaniaclubserver.database.windows.net,1433;Initial Catalog=mas_db;Persist Security Info=False;User ID=francisco;Password=_Password99;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             //"Data Source= (localdb)\\MSSQLLocalDB; Initial Catalog=MasDataMigrationsTest");
             return new ApplicationContext(optionsBuilder.Options);
         }

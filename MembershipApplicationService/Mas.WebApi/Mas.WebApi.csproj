@@ -8,12 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="samples\newapplication.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Mas.Domain\Mas.Domain.csproj" />
     <ProjectReference Include="..\Mas.Infrastructure.Data\Mas.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\Mas.WebApi.Contracts\Mas.WebApi.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Samples\" />
   </ItemGroup>
 
 </Project>

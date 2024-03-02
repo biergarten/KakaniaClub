@@ -8,10 +8,17 @@ namespace Mas.Domain.Aggregate
     {
         private Application() { }
         public Application(DateTime initDate, Person person, MembershipType membershipType, string emailLocation) 
+            : this(Guid.NewGuid(), initDate, person, membershipType, emailLocation)
+        {
+            
+
+        }
+
+        public Application(Guid id, DateTime initDate, Person person, MembershipType membershipType, string emailLocation)
         {
             _initiated = initDate;
             Person = person;
-            Id = Guid.NewGuid();
+            Id = id;
             MembershipType = membershipType;
             Status = ApplicationStatus.Unassigned;
             EmailLocation = emailLocation;
