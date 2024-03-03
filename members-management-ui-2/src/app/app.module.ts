@@ -59,7 +59,8 @@ const isIE =
       {
         interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
         protectedResourceMap: new Map([
-          ["https://graph.microsoft.com/v1.0/me", ["user.read"]],
+          ["https://graph.microsoft.com/v1.0/me", ["user.read"]]
+          // ["https://graph.microsoft.com/v1.0/me", ["user.read"]], ["https://graph.microsoft.com/v1.0/me/memberOf", ["groupmember.read.all"]]
         ]),
       }
     ),
