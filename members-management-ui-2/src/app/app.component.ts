@@ -36,6 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.setLoginDisplay();
       });
     this.mySubscription = this.userActivityService.inactivityObservable$.pipe(switchMap(() => this.frutasService.loadAllFrutas(""))).subscribe();
+    this.userActivityService.beforeUnloadObservable$.pipe(switchMap(() => this.frutasService.loadAllFrutas(""))).subscribe();
 
   }
 

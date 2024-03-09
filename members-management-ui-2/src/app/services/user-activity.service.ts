@@ -7,7 +7,9 @@ import { switchMap, startWith } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class UserActivityService {
-    inactivityThreshold$ = timer(5 * 1000); // 5 minutes
+    inactivityThreshold$ = timer(20 * 1000);
+    beforeUnloadObservable$ = fromEvent(window, 'beforeunload'); //.pipe(mapTo('appClosed'));
+
 
     activityEvents$ = merge(
         fromEvent(document, 'mousemove'),
