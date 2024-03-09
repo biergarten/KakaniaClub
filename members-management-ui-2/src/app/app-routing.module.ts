@@ -4,8 +4,13 @@ import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from "./home/home.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { MsalGuard } from "@azure/msal-angular";
+import { AboutComponent } from "./about/about.component";
 
 const routes: Routes = [
+  {
+    path: "about",
+    component: AboutComponent
+  },
   {
     path: "profile",
     component: ProfileComponent,
