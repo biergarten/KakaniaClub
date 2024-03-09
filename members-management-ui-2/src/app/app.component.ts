@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { MsalService, MsalBroadcastService, MSAL_GUARD_CONFIG, MsalGuardConfiguration } from '@azure/msal-angular';
 import { InteractionStatus, RedirectRequest } from '@azure/msal-browser';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { UserActivityService } from './services/user-activity.service';
 
@@ -15,11 +15,12 @@ export class AppComponent implements OnInit, OnDestroy {
   isIframe = false;
   loginDisplay = false;
   private readonly _destroying$ = new Subject<void>();
+  private mySubscription: Subscription;
 
-  constructor(@Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration, 
-  private broadcastService: MsalBroadcastService, 
-  private authService: MsalService,
-  private userActivityService: UserActivityService) { }
+  constructor(@Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
+    private broadcastService: MsalBroadcastService,
+    private authService: MsalService,
+    private userActivityService: UserActivityService) { }
 
   ngOnInit() {
     this.isIframe = window !== window.parent && !window.opener;
@@ -31,7 +32,9 @@ export class AppComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.setLoginDisplay();
-      })
+      });
+    this.mySubscription = this.userActivityService.inactivityObservable$.subscribe(() => alert('You have been inactive for 5 minutes.'))
+
   }
 
   login() {
@@ -55,5 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
+    this.mySubscription.unsubscribe();
   }
+
 }

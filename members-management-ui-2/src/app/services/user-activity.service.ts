@@ -1,43 +1,25 @@
+// inactivity.service.ts
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { fromEvent, merge, Observable, timer } from 'rxjs';
+import { switchMap, startWith } from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class UserActivityService {
-    private userActivity = new Subject<void>();
-    private timeoutMilliseconds = 10000; // 5 minutes of inactivity
+    inactivityThreshold$ = timer(5 * 1000); // 5 minutes
 
-    constructor() {
-        this.watchForInactivity();
-    }
+    activityEvents$ = merge(
+        fromEvent(document, 'mousemove'),
+        fromEvent(document, 'keypress'),
+        fromEvent(document, 'click')
+    );
 
-    private watchForInactivity() {
-        // Listen to the userActivity subject and debounce the events
-        // Only trigger after 5 minutes (300000 milliseconds) of inactivity
-        this.userActivity.pipe(
-            debounceTime(this.timeoutMilliseconds) // 5 minutes in milliseconds
-        ).subscribe(() => {
-            this.showInactivePopup();
-        });
+    inactivityObservable$: Observable<number> = this.activityEvents$.pipe(
+        startWith(0),
+        // Restart the timer on every user activity
+        switchMap(() => this.inactivityThreshold$)
+    );
 
-        this.setupActivityListeners();
-    }
-
-    private setupActivityListeners() {
-        // Listen for any user activities
-        ['click', 'mousemove', 'keypress'].forEach(event => {
-            window.addEventListener(event, () => {
-                console.log('escuchando');
-                this.userActivity.next();
-            });
-        });
-    }
-
-    private showInactivePopup() {
-        // Logic to show the popup
-        console.log('inactive');
-        //alert('You have been inactive for 5 minutes.');
-    }
+    constructor() { }
 }
