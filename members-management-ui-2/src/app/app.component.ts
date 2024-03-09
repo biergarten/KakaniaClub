@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { MsalService, MsalBroadcastService, MSAL_GUARD_CONFIG, MsalGuardConfiguration } from '@azure/msal-angular';
 import { InteractionStatus, RedirectRequest } from '@azure/msal-browser';
 import { Subject, Subscription } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { UserActivityService } from './services/user-activity.service';
+import { FrutasService } from './services/frutas.service';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(@Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private broadcastService: MsalBroadcastService,
     private authService: MsalService,
-    private userActivityService: UserActivityService) { }
+    private userActivityService: UserActivityService,
+    private frutasService: FrutasService) { }
 
   ngOnInit() {
     this.isIframe = window !== window.parent && !window.opener;
@@ -33,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.setLoginDisplay();
       });
-    this.mySubscription = this.userActivityService.inactivityObservable$.subscribe(() => alert('You have been inactive for 5 minutes.'))
+    this.mySubscription = this.userActivityService.inactivityObservable$.pipe(switchMap(() => this.frutasService.loadAllFrutas(""))).subscribe();
 
   }
 
