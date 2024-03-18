@@ -56,7 +56,7 @@ namespace Mas.WebApi.FunctionalTests
             return _msSqlContainer.StartAsync();
         }
 
-        [Fact]
+        [Fact(Skip ="missing infra")]
         public void NewContractStoresCorrectId()
         {
             UpWithTheDatabase();
