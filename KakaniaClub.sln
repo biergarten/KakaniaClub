@@ -15,6 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mas.WebApi.Contracts", "Mem
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{6482E7B3-2AB9-4FC7-9B47-D0245B0763D7}"
 	ProjectSection(SolutionItems) = preProject
+		ci-build.yaml = ci-build.yaml
 		MembershipApplicationService\Pipelines\readme.md = MembershipApplicationService\Pipelines\readme.md
 	EndProjectSection
 EndProject
