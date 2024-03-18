@@ -10,7 +10,8 @@ namespace Mas.WebApi.HostedService
             var credential = new DefaultAzureCredential();
             services.AddSingleton(_ => new ServiceBusClient("kakania-club-shared.servicebus.windows.net", credential));
 
-            services.AddHostedService<NewMemberListener>();
+            //services.AddHostedService<NewMemberListener>();
+            services.AddHostedService<UpdateMemberListener>();
             return services;
         }
     }

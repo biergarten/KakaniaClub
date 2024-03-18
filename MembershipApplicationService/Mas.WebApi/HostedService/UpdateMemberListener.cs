@@ -6,19 +6,20 @@ using Mas.Domain.Enums;
 using Mas.Domain.ValueObjects;
 using Mas.Infrastructure.Data;
 using Mas.WebApi.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace Mas.WebApi.HostedService
 {
-    public class NewMemberListener : IHostedService
+    public class UpdateMemberListener : IHostedService
     {
         private readonly ServiceBusProcessor _busProcessor;
-        private readonly ILogger<NewMemberListener> _logger;
+        private readonly ILogger<UpdateMemberListener> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public NewMemberListener(
-            ILogger<NewMemberListener> logger,
-            ServiceBusClient busClient,
+        public UpdateMemberListener(
+            ILogger<UpdateMemberListener> logger,
+            ServiceBusClient busClient, 
             IServiceProvider serviceProvider)
         {
             _busProcessor = busClient.CreateProcessor("applicationcreatedtopic", "MasSubscription", new ServiceBusProcessorOptions { });
@@ -57,11 +58,21 @@ namespace Mas.WebApi.HostedService
             using var scope = _serviceProvider.CreateAsyncScope();
 
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
-            await dbContext.Applications.AddAsync(application);
 
+            var existingApplication = await dbContext.Applications.SingleOrDefaultAsync(x=>x.Id == messageEvent.ApplicationId);
+
+            if (existingApplication == null)
+            {
+                await args.DeadLetterMessageAsync(args.Message,
+                                             "NonExistingApplication",
+                                             "There is no a application to be updated");
+                return;
+            }
+            var newPerson = new Person(messageEvent.Name, existingApplication.Person.Name.LastName, existingApplication.Person.Email, existingApplication.Person.Phone);
+            existingApplication.UpdateDetails(newPerson, existingApplication.MembershipType);
             await dbContext.SaveChangesAsync();
 
-
+           
 
             _logger.LogInformation($"Message received for application {messageEvent.ApplicationId}");
 
