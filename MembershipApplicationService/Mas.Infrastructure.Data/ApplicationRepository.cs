@@ -41,6 +41,12 @@ namespace Mas.Infrastructure.Data
         {
             return await _dbContext.Set<Application>().Where(a=> a.Status== status).ToListAsync();
         }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var application = await _dbContext.Applications.Include(i => i.ReferralProcessInfo).SingleOrDefaultAsync(e => e.Id.Equals(id));
+            _dbContext.Set<Application>().Remove(application);
+        }
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();

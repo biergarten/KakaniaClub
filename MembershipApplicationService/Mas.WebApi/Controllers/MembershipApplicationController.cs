@@ -1,4 +1,5 @@
-﻿using Mas.Domain.Aggregate;
+﻿using Azure.Core;
+using Mas.Domain.Aggregate;
 using Mas.Domain.Enums;
 using Mas.Domain.ValueObjects;
 using Mas.Infrastructure.Data;
@@ -132,8 +133,12 @@ namespace Mas.WebApi.Controllers
 
         // DELETE api/<MembershipApplication>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(Guid id)
         {
+            await _applicationRepository.DeleteAsync(id);
+            await _applicationRepository.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

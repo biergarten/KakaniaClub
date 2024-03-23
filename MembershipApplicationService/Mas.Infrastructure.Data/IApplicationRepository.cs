@@ -13,6 +13,8 @@ namespace Mas.Infrastructure.Data
 
         public Task<Application> AddAsync(Application entity);
 
+        public Task DeleteAsync(Guid id);
+
         public Task SaveChangesAsync();
     }
 }
