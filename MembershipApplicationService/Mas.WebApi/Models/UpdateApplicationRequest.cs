@@ -5,7 +5,7 @@ namespace Mas.WebApi.Models
 {
     public record UpdateApplicationRequest(
         DateTime DateInitiated,
-        Person Person,
+        PersonDto Person,
         MembershipType MembershipType
         );
 }

@@ -1,11 +1,6 @@
 ﻿using Mas.Domain.Aggregate;
 using Mas.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Mas.Infrastructure.Data
 {
@@ -19,13 +14,27 @@ namespace Mas.Infrastructure.Data
 
         public async Task<Application> GetByIdAsync(Guid id)
         {
-        return await _dbContext.Set<Application>().SingleOrDefaultAsync(e => e.Id.Equals(id));
+            return await _dbContext.Applications.Include(i => i.ReferralProcessInfo).SingleOrDefaultAsync(e => e.Id.Equals(id));
         }
         public async Task<Application> AddAsync(Application entity)
         {
             await _dbContext.Set<Application>().AddAsync(entity);
             
             return entity;
+        }
+
+        public async Task<Application?> GetFirstUnassignedAsync(string userId)
+        {
+            var application = await _dbContext.Set<Application>()
+                .Where(a => a.Status == ApplicationStatus.Assigned && a.AssignToUserId==userId)
+                .OrderBy(x=> x.DateInitiated).FirstOrDefaultAsync();
+            if(application!= null)
+                return application;
+
+            return await _dbContext.Set<Application>()
+                .Where(a => a.Status == ApplicationStatus.Unassigned)
+                .OrderBy(x => x.DateInitiated).FirstOrDefaultAsync();
+
         }
 
         public async Task<List<Application>> GetAsync(ApplicationStatus status)

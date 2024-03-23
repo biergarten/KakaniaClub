@@ -30,6 +30,8 @@ namespace Mas.WebApi.Controllers
             return Ok(applications.Select(application=> application.ToDto()));
         }
 
+
+
         // GET api/<MembershipApplication>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GetApplicationResponse>> Get(Guid id)
@@ -67,6 +69,23 @@ namespace Mas.WebApi.Controllers
             return Ok();
         }
 
+        [HttpPut("assign/{userId}")]
+        public async Task<ActionResult<GetApplicationResponse>> PutAssignAvailable(string userId)
+        {
+            var application = await _applicationRepository.GetFirstUnassignedAsync(userId);
+            if (application == null)
+                return NoContent();
+          
+            if(application.AssignToUserId == userId)
+                return Ok(application);
+            
+            
+            application.Assign(userId);
+            await _applicationRepository.SaveChangesAsync();
+
+            return Ok(application);
+        }
+
         [HttpPut("{id}/unassign")]
         public async Task<ActionResult> PutUnassign(Guid id)
         {
@@ -81,7 +100,7 @@ namespace Mas.WebApi.Controllers
         public async Task<ActionResult> PutRefer(Guid id, [FromBody] UpdateApplicationRequest request)
         {
             var application = await _applicationRepository.GetByIdAsync(id);
-            application.UpdateDetails(request.Person,
+            application.UpdateDetails(request.Person.ToDomainEntity(),
                 request.MembershipType);
             application.Refer();
             await _applicationRepository.SaveChangesAsync();
@@ -104,7 +123,7 @@ namespace Mas.WebApi.Controllers
         public async Task<ActionResult> Put(Guid id, [FromBody] UpdateApplicationRequest request)
         {
             var application = await _applicationRepository.GetByIdAsync(id);
-            application.UpdateDetails(request.Person,
+            application.UpdateDetails(request.Person.ToDomainEntity(),
                 request.MembershipType);
             await _applicationRepository.SaveChangesAsync();
 
