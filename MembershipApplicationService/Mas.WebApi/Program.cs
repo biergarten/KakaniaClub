@@ -13,6 +13,17 @@ builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.IncludeFields = true;
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddScoped<IApplicationRepository,
            ApplicationRepository>();
 
@@ -38,7 +49,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAnyOrigin");
 
 app.UseAuthorization();
 

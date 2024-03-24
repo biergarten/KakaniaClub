@@ -35,14 +35,14 @@ namespace Mas.WebApi.Controllers
 
         // GET api/<MembershipApplication>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<GetApplicationResponse>> Get(Guid id)
+        public async Task<ActionResult<ApplicationDto>> Get(Guid id)
         {
             var application = await _applicationRepository.GetByIdAsync(id);
             if (application == null)
                 return NotFound();
-            var response = new GetApplicationResponse(application.ToDto()
-                );
-            return Ok(response);
+            //var response = new GetApplicationResponse(application.ToDto()
+            //    );
+            return Ok(application.ToDto());
         }
 
         // POST api/<MembershipApplication>
@@ -71,20 +71,20 @@ namespace Mas.WebApi.Controllers
         }
 
         [HttpPut("assign/{userId}")]
-        public async Task<ActionResult<GetApplicationResponse>> PutAssignAvailable(string userId)
+        public async Task<ActionResult<ApplicationDto>> PutAssignAvailable(string userId)
         {
             var application = await _applicationRepository.GetFirstUnassignedAsync(userId);
             if (application == null)
                 return NoContent();
           
             if(application.AssignToUserId == userId)
-                return Ok(application);
+                return Ok(application.ToDto());
             
             
             application.Assign(userId);
             await _applicationRepository.SaveChangesAsync();
 
-            return Ok(application);
+            return Ok(application.ToDto());
         }
 
         [HttpPut("{id}/unassign")]

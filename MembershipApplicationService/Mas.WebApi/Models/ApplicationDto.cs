@@ -11,8 +11,7 @@ namespace Mas.WebApi.Models
        Person Person,
        MembershipType MembershipType,
        string EmailLocation,
-       ApplicationStatus Status,
-       ReferralProcessInfo? ReferralProcessInfo
+       ApplicationStatus Status
 
        );
 
@@ -27,8 +26,7 @@ namespace Mas.WebApi.Models
                 application.Person,
                 application.MembershipType,
                 application.EmailLocation,
-                application.Status,
-                application.ReferralProcessInfo
+                application.Status
                 );
         }
     }
